@@ -36,5 +36,5 @@ class ClaudeClient:
             log.error("Connection error")
             return "Problème de connexion à l'API. Réessaie."
         except APIStatusError as e:
-            log.error(f"API error {e.status_code}: {e.message}")
+            log.error("API error status_code=%s error_code=%s", e.status_code, e.code)
             return "Une erreur est survenue."
