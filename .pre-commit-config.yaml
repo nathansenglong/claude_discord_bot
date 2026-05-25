@@ -1,0 +1,39 @@
+# Pre-commit hooks configuration
+# Run automatically before each commit to catch issues early.
+# Install once with: pre-commit install
+# Run manually on all files: pre-commit run --all-files
+
+repos:
+  # Standard hooks for basic file hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        # Removes trailing spaces at end of lines
+      - id: end-of-file-fixer
+        # Ensures files end with a single newline
+      - id: check-yaml
+        # Validates YAML syntax (useful for CI configs later)
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+        # Prevents accidentally committing files larger than 500 KB
+      - id: check-merge-conflict
+        # Catches unresolved merge conflict markers
+
+  # Ruff: fast Python linter and formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.14
+    hooks:
+      - id: ruff
+        args: [--fix]
+        # Auto-fixes lint errors when possible
+      - id: ruff-format
+        # Auto-formats code (replaces black)
+
+  # Commitizen: enforces Conventional Commits style for commit messages
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.16.2
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+        # Validates the commit message itself

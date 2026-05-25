@@ -1,12 +1,11 @@
 """Tests for ClaudeClient — retroactive coverage on the existing wrapper."""
 
-import pytest
 from unittest.mock import MagicMock, patch
 
+import pytest
 from anthropic import APIConnectionError, APIStatusError, RateLimitError
 
 from claude_discord_bot.claude_client import ClaudeClient
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -46,7 +45,9 @@ def _make_response(text: str) -> MagicMock:
 def test_ask_returns_response_text(client, mock_anthropic):
     """Happy path: ask() returns the text field from Claude's response."""
     # Arrange
-    mock_anthropic.return_value.messages.create.return_value = _make_response("Bonjour !")
+    mock_anthropic.return_value.messages.create.return_value = _make_response(
+        "Bonjour !"
+    )
     # Act
     result = client.ask("Dis bonjour")
     # Assert
@@ -61,7 +62,7 @@ def test_ask_uses_default_system_prompt(client, mock_anthropic):
     client.ask("test")
     # Assert
     kwargs = mock_anthropic.return_value.messages.create.call_args.kwargs
-    assert "Discord bot" in kwargs["system"]
+    assert "bot Discord" in kwargs["system"]
 
 
 def test_ask_uses_custom_system_prompt(client, mock_anthropic):
@@ -99,7 +100,7 @@ def test_ask_handles_rate_limit_error(client, mock_anthropic):
 
 
 def test_ask_handles_connection_error(client, mock_anthropic):
-    """APIConnectionError is caught and returns a French message containing 'connexion'."""
+    """APIConnectionError, French message containing 'connexion'."""
     # Arrange
     exc = Exception.__new__(APIConnectionError)
     mock_anthropic.return_value.messages.create.side_effect = exc

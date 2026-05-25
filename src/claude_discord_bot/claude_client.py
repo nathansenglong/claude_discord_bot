@@ -1,4 +1,5 @@
 """Wrapper around the Anthropic API."""
+
 import logging
 
 from anthropic import (
@@ -9,6 +10,14 @@ from anthropic import (
 )
 
 log = logging.getLogger(__name__)
+
+_DEFAULT_SYSTEM_PROMPT = (
+    "Tu es un bot Discord. "
+    "Limite tes réponses à 2000 caractères maximum. "
+    "Reste professionnel et évite les blagues ou les réponses trop familières. "
+    "En cas de doute, indique-le clairement plutôt que d'inventer une réponse. "
+    "Chaque réponse doit être signée par un miaulement."
+)
 
 
 class ClaudeClient:
@@ -25,7 +34,7 @@ class ClaudeClient:
             msg = self._client.messages.create(
                 model=self._model,
                 max_tokens=self._max_tokens,
-                system=system or "You are a helpful Discord bot. Keep replies under 2000 characters.",
+                system=system or _DEFAULT_SYSTEM_PROMPT,
                 messages=[{"role": "user", "content": prompt}],
             )
             return msg.content[0].text
@@ -36,5 +45,9 @@ class ClaudeClient:
             log.error("Connection error")
             return "Problème de connexion à l'API. Réessaie."
         except APIStatusError as e:
-            log.error("API error status_code=%s error_type=%s", e.status_code, type(e).__name__)
+            log.error(
+                "API error status_code=%s error_type=%s",
+                e.status_code,
+                type(e).__name__,
+            )
             return "Une erreur est survenue."
