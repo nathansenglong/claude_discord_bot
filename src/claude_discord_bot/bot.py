@@ -1,4 +1,5 @@
 """Discord bot entry point."""
+
 import logging
 
 import discord
