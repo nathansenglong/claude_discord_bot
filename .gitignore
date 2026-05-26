@@ -229,3 +229,6 @@ Thumbs.db
 # Claude Code
 .claude/
 CLAUDE.md
+
+# Superpowers internal plans
+docs/superpowers/
