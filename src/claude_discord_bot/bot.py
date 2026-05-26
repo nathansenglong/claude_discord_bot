@@ -41,7 +41,10 @@ def create_bot(config: Config) -> discord.Client:
 
         prompt = message.content.replace(f"<@{client.user.id}>", "").strip()
         if not prompt:
-            await message.reply("Pose-moi une question !")
+            await message.reply(
+                "Je suis un assistant IA propulsé par **Claude** (Anthropic). "
+                "Pose-moi une question !"
+            )
             return
 
         async with message.channel.typing():
