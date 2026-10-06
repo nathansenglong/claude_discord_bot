@@ -1,20 +1,11 @@
-# claude_discord_bot
-Projet personnel pour me familiariser avec une stack pro complète : bot Discord prop
-ulsé par l'API Claude, développé en Python avec tests automatisés, conteneurisé avec
- Docker, intégré en CI/CD via GitHub Actions et déployé en continu sur Azure. Work
-flow git pro (branches, PR, conventional commits).
 # claude-discord-bot
 
-[![CI](https://github.com/nathansenglong/claude_discord_bot/actions/workflows/ci.yml
-/badge.svg)](https://github.com/nathansenglong/claude_discord_bot/actions/workflows/
-ci.yml)
+[![CI](https://github.com/nathansenglong/claude_discord_bot/actions/workflows/ci.yml/badge.svg)](https://github.com/nathansenglong/claude_discord_bot/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue)
 ![Version](https://img.shields.io/badge/version-0.2.0-brightgreen)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-> Bot Discord personnel propulsé par l'API Claude (Anthropic). Projet d'apprentissag
-e d'une stack professionnelle complète : bot, tests, Docker, CI/CD GitHub Actions, d
-éploiement Azure.
+> Bot Discord personnel propulsé par l'API Claude (Anthropic). Projet d'apprentissage d'une stack professionnelle complète : bot, tests automatisés, Docker, CI/CD GitHub Actions, déploiement Azure, workflow Git pro (branches, PR, Conventional Commits).
 
 [English summary below ↓](#english-summary)
 
@@ -22,12 +13,10 @@ e d'une stack professionnelle complète : bot, tests, Docker, CI/CD GitHub Actio
 
 ## Fonctionnalités
 
-- Répond aux mentions (`@bot ta question`) en appelant Claude (Anthropic API)
-- Gestion des erreurs API avec messages utilisateur en français (rate limit, connexi
-on, erreur serveur)
+- Répond aux mentions (`@bot ta question`) en appelant Claude (API Anthropic)
+- Gestion des erreurs API avec messages utilisateur en français (rate limit, connexion, erreur serveur)
 - Retry automatique (3 tentatives) et timeout de 30 s côté client
-- Prêt pour la production : Docker multi-stage, utilisateur non-root, restart automa
-tique
+- Prêt pour la production : Docker multi-stage, utilisateur non-root, redémarrage automatique
 
 ---
 
@@ -55,8 +44,7 @@ docker compose logs -f bot
 | `DISCORD_BOT_TOKEN` | ✅ | — | Token du bot Discord |
 | `CLAUDE_MODEL` | ❌ | `claude-haiku-4-5-20251001` | Modèle Claude utilisé |
 
-Copier `.env.example` en `.env` et remplir les valeurs. Le fichier `.env` est ignoré
- par git.
+Copier `.env.example` en `.env` et remplir les valeurs. Le fichier `.env` est ignoré par git.
 
 ---
 
@@ -82,8 +70,7 @@ Copier `.env.example` en `.env` et remplir les valeurs. Le fichier `.env` est ig
 
 ```
 src/claude_discord_bot/
-├── config.py         # Config (frozen dataclass) — lit ANTHROPIC_API_KEY & DISCORD_
-BOT_TOKEN
+├── config.py         # Config (frozen dataclass) — lit ANTHROPIC_API_KEY & DISCORD_BOT_TOKEN
 ├── claude_client.py  # ClaudeClient — wrapper Anthropic SDK avec gestion d'erreurs
 └── bot.py            # Entrée Discord — écoute les mentions, appelle ClaudeClient
 tests/
@@ -91,16 +78,14 @@ tests/
 ```
 
 **Flux de données :**
+
 ```
 Discord mention → bot.py → ClaudeClient.ask() → Anthropic API → réponse Discord
 ```
 
-**`Config`** est un dataclass `frozen=True` (immuable après création). Il échoue ave
-c `RuntimeError` au démarrage si `ANTHROPIC_API_KEY` ou `DISCORD_BOT_TOKEN` est abse
-nt — la mauvaise configuration est détectée tôt, pas au premier usage.
+**`Config`** est un dataclass `frozen=True` (immuable après création). Il échoue avec `RuntimeError` au démarrage si `ANTHROPIC_API_KEY` ou `DISCORD_BOT_TOKEN` est absent : la mauvaise configuration est détectée tôt, pas au premier usage.
 
-**`ClaudeClient`** retourne des chaînes d'erreur en français plutôt que de propager
-des exceptions. Le bot Discord ne crashe jamais sur une erreur API.
+**`ClaudeClient`** retourne des chaînes d'erreur en français plutôt que de propager des exceptions. Le bot Discord ne crashe jamais sur une erreur API.
 
 ---
 
@@ -131,33 +116,23 @@ cz commit
 
 ## Conformité EU AI Act & RGPD
 
-### EU AI Act — Article 52 (transparence)
+### EU AI Act — Article 50 (transparence)
 
-Ce bot respecte l'obligation de divulgation de l'Article 52 : les utilisateurs sont
-informés qu'ils interagissent avec une IA. Le prompt système indique explicitement `
-"Tu es un bot Discord"` et chaque réponse est signée, rendant la nature IA du bot tr
-ansparente.
+Le règlement (UE) 2024/1689 impose aux fournisseurs de systèmes d'IA destinés à interagir directement avec des personnes physiques de veiller à ce que ces personnes soient informées qu'elles interagissent avec une IA (article 50, paragraphe 1). L'article 52 mentionné dans la version initiale de la proposition correspond désormais à cet article 50.
 
-> *Les systèmes d'IA destinés à interagir avec des personnes physiques doivent infor
-mer ces personnes qu'elles interagissent avec un système d'IA.* — EU AI Act, Art. 52
-(1)
+Pour satisfaire cette obligation, le bot signale sa nature IA **dans les messages visibles par les utilisateurs** (signature de chaque réponse). Le prompt système, lui, n'est pas visible des utilisateurs et ne suffit pas à lui seul.
 
 ### RGPD
 
-- **Pas de stockage persistant** : les messages Discord ne sont pas conservés après
-traitement.
-- **Sous-traitant tiers** : les messages envoyés à l'API Anthropic sont soumis à la
-[politique de confidentialité d'Anthropic](https://www.anthropic.com/privacy). Les u
-tilisateurs de ce bot doivent en être informés.
-- **Journalisation minimale** : seules les erreurs techniques sont loggées — le cont
-enu des messages n'est jamais enregistré.
+- **Pas de stockage persistant** : les messages Discord ne sont pas conservés après traitement.
+- **Sous-traitant tiers** : les messages envoyés à l'API Anthropic sont soumis à la [politique de confidentialité d'Anthropic](https://www.anthropic.com/privacy). Les utilisateurs de ce bot doivent en être informés.
+- **Journalisation minimale** : seules les erreurs techniques sont loggées. Le contenu des messages n'est jamais enregistré.
 
 ---
 
 ## Liens
 
-- **GitHub :** [nathansenglong/claude_discord_bot](https://github.com/nathansenglong
-/claude_discord_bot)
+- **GitHub :** [nathansenglong/claude_discord_bot](https://github.com/nathansenglong/claude_discord_bot)
 - **Changelog :** [CHANGELOG.md](CHANGELOG.md)
 - **Documentation Anthropic :** [docs.anthropic.com](https://docs.anthropic.com)
 - **discord.py :** [discordpy.readthedocs.io](https://discordpy.readthedocs.io)
@@ -166,14 +141,8 @@ enu des messages n'est jamais enregistré.
 
 ## English summary
 
-Personal learning project — a Discord bot powered by the Anthropic Claude API, built
- with Python. Designed to practice a professional end-to-end stack: bot logic, autom
-ated tests, Docker containerisation, GitHub Actions CI/CD, and Azure deployment.
+Personal learning project: a Discord bot powered by the Anthropic Claude API, built with Python. Designed to practice a professional end-to-end stack: bot logic, automated tests, Docker containerisation, GitHub Actions CI/CD, and Azure deployment.
 
-**How it works:** Mention the bot in any Discord channel with a question. It calls C
-laude via the Anthropic API and replies with the response (capped at 2 000 character
-s). API errors are caught and returned as friendly French messages; the bot never cr
-ashes on API failures.
+**How it works:** Mention the bot in any Discord channel with a question. It calls Claude via the Anthropic API and replies with the response (capped at 2,000 characters). API errors are caught and returned as friendly French messages; the bot never crashes on API failures.
 
-**EU AI Act compliance:** The system prompt explicitly identifies the bot as an AI s
-ystem (Art. 52 transparency requirement).
+**EU AI Act compliance:** The bot discloses its AI nature in the messages users actually see (transparency obligation, Art. 50 of Regulation (EU) 2024/1689).
